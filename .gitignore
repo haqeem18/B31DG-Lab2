@@ -1,0 +1,7 @@
+
+debug.cfg
+debug_custom.json
+esp32c3.svd
+.vscode/c_cpp_properties.json
+.vscode/arduino.json
+.gitattributes

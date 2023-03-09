@@ -8,14 +8,17 @@ Ticker Cycle;
 #define Signal_2_Input 1
 #define Signal_3_Input 2
 #define Analog_4_Input 3
+#define LED_4_Output 5
 
 // Instantiate variables
+/* Task 2 & 3*/
 unsigned long halflambda;
 unsigned int freq;
 
+/* Task 4*/
 int ADC;
 float volts [4];
-int v=0;
+int v = 0;
 float avg;
 
 void setup() 
@@ -28,6 +31,7 @@ void setup()
   pinMode(Signal_2_Input, INPUT);
   pinMode(Signal_3_Input, INPUT);
   pinMode(Analog_4_Input, INPUT);
+  pinMode(LED_4_Output, OUTPUT);
 
   // Set ticker interval 
   // Cycle.attach_ms(2000, Task3);
@@ -128,6 +132,16 @@ void Task4()
   avg = avg / 4;
   Serial.print("Average is ");
   Serial.println(avg);
+
+  // LED error when average is greater than half of maximum range
+  if (avg > 1.65)
+  {
+    digitalWrite(LED_4_Output, HIGH);
+  }
+  else
+  {
+    digitalWrite(LED_4_Output, LOW);
+  }
 
   // Measure Task end time
   int endtime = micros();

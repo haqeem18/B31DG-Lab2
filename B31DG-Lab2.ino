@@ -21,6 +21,10 @@ float volts [4];
 int v = 0;
 float avg;
 
+/* Task 5*/
+float Frequency1;
+float Frequency2;
+
 void setup() 
 {
   // Serial monitor
@@ -35,7 +39,7 @@ void setup()
 
   // Set ticker interval 
   // Cycle.attach_ms(2000, Task3);
-  Cycle.attach_ms(2000, Task4);
+  Cycle.attach_ms(2000, Task5);
 }
 
 void loop() 
@@ -71,8 +75,7 @@ void Task2()
   // Print frequency of signal within 333Hz and 1000Hz
   if ((freq >= 333) && (freq <= 1000))
   {
-    Serial.print("Frequency is ");
-    Serial.println(freq);
+    Frequency2 = freq;
   }
 
   // Measure Task end time
@@ -96,8 +99,7 @@ void Task3()
   // Print frequency of signal within 500Hz and 1000Hz
   if ((freq >= 500) && (freq <= 1000))
   {
-    Serial.print("Frequency is ");
-    Serial.println(freq);
+    Frequency2 = freq;
   }
 
   // Measure Task end time
@@ -142,6 +144,28 @@ void Task4()
   {
     digitalWrite(LED_4_Output, LOW);
   }
+
+  // Measure Task end time
+  int endtime = micros();
+  int time = endtime - starttime;
+  Serial.print("Task duration is ");
+  Serial.println(time);
+}
+
+void Task5()
+{
+  // Measure Task start time
+  int starttime = micros();
+
+  // Convert the frequnecy in percentage
+  Frequency1 = 100 * (Frequency1 / (1000-333));
+  Frequency2 = 100 * (Frequency2 / (1000-500));
+
+  // Print Frequency1 & Frequency2
+  Serial.print("Frequency 1 is ");
+  Serial.println(Frequency1);
+  Serial.print("Frequency 2 is ");
+  Serial.println(Frequency2);
 
   // Measure Task end time
   int endtime = micros();

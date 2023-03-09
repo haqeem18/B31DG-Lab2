@@ -1,9 +1,15 @@
 #include <Ticker.h>
 
+// Instantiate objects
+Ticker Cycle;
+
 // LED pin for Task 1
 #define LED_1_Output 4
+#define Signal_2_Input 1
 
-Ticker Cycle;
+// Instantiate variables
+unsigned long halflambda;
+unsigned int freq;
 
 void setup() 
 {
@@ -12,9 +18,10 @@ void setup()
 
   // Set output pin
   pinMode(LED_1_Output, OUTPUT);
+  pinMode(Signal_2_Input, INPUT);
 
   // Set ticker interval 
-  Cycle.attach_ms(1000, Task1); // Testing ticker to perform Task1 every 1s
+  Cycle.attach_ms(2000, Task2);
 }
 
 void loop() 
@@ -35,4 +42,19 @@ void Task1()
   digitalWrite(LED_1_Output, HIGH);
   delayMicroseconds(30);
   digitalWrite(LED_1_Output, LOW);
+}
+
+void Task2()
+{
+  // Measure the HIGH period of the square wave
+  halflambda = pulseIn(Signal_2_Input, HIGH);
+  
+  // Calculating frequency of the signal
+  freq = 1 / (2*halflambda*0.000001);
+
+  // Print frequency of signal within 333Hz and 1000Hz
+  if ((freq >= 333) && (freq <= 1000))
+  {
+    Serial.println(freq);
+  }
 }

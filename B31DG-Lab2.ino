@@ -3,9 +3,10 @@
 // Instantiate objects
 Ticker Cycle;
 
-// LED pin for Task 1
+// GPIOs for tasks
 #define LED_1_Output 4
 #define Signal_2_Input 1
+#define Signal_3_Input 2
 
 // Instantiate variables
 unsigned long halflambda;
@@ -21,7 +22,7 @@ void setup()
   pinMode(Signal_2_Input, INPUT);
 
   // Set ticker interval 
-  Cycle.attach_ms(2000, Task2);
+  Cycle.attach_ms(2000, Task3);
 }
 
 void loop() 
@@ -54,6 +55,21 @@ void Task2()
 
   // Print frequency of signal within 333Hz and 1000Hz
   if ((freq >= 333) && (freq <= 1000))
+  {
+    Serial.println(freq);
+  }
+}
+
+void Task3()
+{
+  // Measure the HIGH period of the square wave
+  halflambda = pulseIn(Signal_3_Input, HIGH);
+  
+  // Calculating frequency of the signal
+  freq = 1 / (2*halflambda*0.000001);
+
+  // Print frequency of signal within 500Hz and 1000Hz
+  if ((freq >= 500) && (freq <= 1000))
   {
     Serial.println(freq);
   }

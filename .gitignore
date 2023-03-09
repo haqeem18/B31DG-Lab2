@@ -5,3 +5,4 @@ esp32c3.svd
 .vscode/c_cpp_properties.json
 .vscode/arduino.json
 .gitattributes
+esp32.svd

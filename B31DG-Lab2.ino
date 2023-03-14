@@ -1,7 +1,9 @@
 #include <Ticker.h>
+#include <B31DGMonitor.h>
 
 // Instantiate objects
 Ticker Cycle;
+B31DGCyclicExecutiveMonitor Monitor;
 
 // GPIOs for tasks
 #define LED_1_Output 4
@@ -11,6 +13,11 @@ Ticker Cycle;
 #define LED_4_Output 5
 
 // Instantiate variables
+/* CE */
+int CE_Counter = 0;
+int Task1_Count = 0;
+int offset = 0;
+
 /* Task 2 & 3*/
 unsigned long halflambda;
 unsigned int freq;
@@ -25,8 +32,15 @@ float avg;
 float Frequency1;
 float Frequency2;
 
+/* Task timer */
+int starttime;
+int tasktime;
+
 void setup() 
 {
+  // Cyclic Executive Monitor
+  Monitor.startMonitoring();
+
   // Serial monitor
   Serial.begin(9600);
 
@@ -38,11 +52,11 @@ void setup()
   pinMode(LED_4_Output, OUTPUT);
 
   // Set ticker interval 
-  // Cycle.attach_ms(2000, Task3);
-  Cycle.attach_ms(2000, Task5);
+  Cycle.attach_ms(1, CyclicExecutive);
+  // Cycle.attach_ms(1, Task1);
 }
 
-void loop() 
+void loop()
 {
 }
 
@@ -50,7 +64,12 @@ void loop()
 // Period = 20ms, Duration = 280us
 void Task1()
 {
-  Serial.println("Executing Task 1");
+  // Measure Task start time
+  // int starttime = micros();
+
+  // Monitor.jobStarted(1);
+
+  // Serial.println("Task 1");
 
   digitalWrite(LED_1_Output, HIGH);
   delayMicroseconds(200);
@@ -59,15 +78,26 @@ void Task1()
   digitalWrite(LED_1_Output, HIGH);
   delayMicroseconds(30);
   digitalWrite(LED_1_Output, LOW);
+
+  // Monitor.jobEnded(1);
+
+  // Measure Task end time
+  // tasktime = micros() - starttime;
+  // Serial.print("Task 1 duration is ");
+  // Serial.println(tasktime);
 }
 
 void Task2()
 {
+  Monitor.jobStarted(2);
+
   // Measure Task start time
-  int starttime = micros();
+  // int starttime = micros();
+
+  Serial.println("Task 2");
 
   // Measure the HIGH period of the square wave
-  halflambda = pulseIn(Signal_2_Input, HIGH);
+  halflambda = pulseIn(Signal_2_Input, HIGH, 1500);
   
   // Calculating frequency of the signal
   freq = 1 / (2*halflambda*0.000001);
@@ -79,19 +109,25 @@ void Task2()
   }
 
   // Measure Task end time
-  int endtime = micros();
-  int time = endtime - starttime;
-  Serial.print("Task duration is ");
-  Serial.println(time);
+  // int endtime = micros();
+  // int time = endtime - starttime;
+  //Serial.print("Task duration is ");
+  //Serial.println(time);
+
+  Monitor.jobEnded(2);
 }
 
 void Task3()
 {
+  Monitor.jobStarted(3);
+
   // Measure Task start time
-  int starttime = micros();
+  // int starttime = micros();
+
+  Serial.println("Task 3");
 
   // Measure the HIGH period of the square wave
-  halflambda = pulseIn(Signal_3_Input, HIGH);
+  halflambda = pulseIn(Signal_3_Input, HIGH, 1500);
   
   // Calculating frequency of the signal
   freq = 1 / (2*halflambda*0.000001);
@@ -103,16 +139,22 @@ void Task3()
   }
 
   // Measure Task end time
-  int endtime = micros();
-  int time = endtime - starttime;
-  Serial.print("Task duration is ");
-  Serial.println(time);
+  // int endtime = micros();
+  // int time = endtime - starttime;
+  //Serial.print("Task duration is ");
+  //Serial.println(time);
+  
+  Monitor.jobEnded(3);
 }
 
 void Task4()
 {
+  Monitor.jobStarted(4);
+
   // Measure Task start time
-  int starttime = micros();
+  // int starttime = micros();
+
+  Serial.println("Task 4");
 
   // Point array back to start
   if (v == 4)
@@ -132,8 +174,8 @@ void Task4()
 
   // Calculating the average
   avg = avg / 4;
-  Serial.print("Average is ");
-  Serial.println(avg);
+  //Serial.print("Average is ");
+  //Serial.println(avg);
 
   // LED error when average is greater than half of maximum range
   if (avg > 1.65)
@@ -146,16 +188,22 @@ void Task4()
   }
 
   // Measure Task end time
-  int endtime = micros();
-  int time = endtime - starttime;
-  Serial.print("Task duration is ");
-  Serial.println(time);
+  // int endtime = micros();
+  // int time = endtime - starttime;
+  //Serial.print("Task duration is ");
+  //Serial.println(time);
+  
+  Monitor.jobEnded(4);
 }
 
 void Task5()
 {
+  Monitor.jobStarted(5);
+
   // Measure Task start time
-  int starttime = micros();
+  // int starttime = micros();
+
+  Serial.println("Task 5");
 
   // Convert the frequnecy in percentage
   Frequency1 = 100 * (Frequency1 / (1000-333));
@@ -168,8 +216,34 @@ void Task5()
   Serial.println(Frequency2);
 
   // Measure Task end time
-  int endtime = micros();
-  int time = endtime - starttime;
-  Serial.print("Task duration is ");
-  Serial.println(time);
+  // int endtime = micros();
+  // int time = endtime - starttime;
+  //Serial.print("Task duration is ");
+  //Serial.println(time);
+
+  
+  Monitor.jobEnded(5);
+}
+
+void CyclicExecutive()
+{
+  // starttime = micros();
+
+  // Performing Task 1
+  if ((CE_Counter % 5) == offset)
+  {
+    Task1();
+    Task1_Count++;
+  }
+  if (Task1_Count == 4)
+  {
+    offset++;
+    Task1_Count = 0;
+    if (offset == 5)
+    {
+      offset = 0;
+    }
+  }
+  
+  CE_Counter++;
 }

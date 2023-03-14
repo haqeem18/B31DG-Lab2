@@ -67,7 +67,7 @@ void Task1()
   // Measure Task start time
   // int starttime = micros();
 
-  // Monitor.jobStarted(1);
+  Monitor.jobStarted(1);
 
   // Serial.println("Task 1");
 
@@ -79,7 +79,7 @@ void Task1()
   delayMicroseconds(30);
   digitalWrite(LED_1_Output, LOW);
 
-  // Monitor.jobEnded(1);
+  Monitor.jobEnded(1);
 
   // Measure Task end time
   // tasktime = micros() - starttime;
@@ -94,7 +94,7 @@ void Task2()
   // Measure Task start time
   // int starttime = micros();
 
-  Serial.println("Task 2");
+  // Serial.println("Task 2");
 
   // Measure the HIGH period of the square wave
   halflambda = pulseIn(Signal_2_Input, HIGH, 1500);
@@ -124,7 +124,7 @@ void Task3()
   // Measure Task start time
   // int starttime = micros();
 
-  Serial.println("Task 3");
+  // Serial.println("Task 3");
 
   // Measure the HIGH period of the square wave
   halflambda = pulseIn(Signal_3_Input, HIGH, 1500);
@@ -154,7 +154,7 @@ void Task4()
   // Measure Task start time
   // int starttime = micros();
 
-  Serial.println("Task 4");
+  // Serial.println("Task 4");
 
   // Point array back to start
   if (v == 4)
@@ -203,17 +203,17 @@ void Task5()
   // Measure Task start time
   // int starttime = micros();
 
-  Serial.println("Task 5");
+  // Serial.println("Task 5");
 
   // Convert the frequnecy in percentage
   Frequency1 = 100 * (Frequency1 / (1000-333));
   Frequency2 = 100 * (Frequency2 / (1000-500));
 
   // Print Frequency1 & Frequency2
-  Serial.print("Frequency 1 is ");
-  Serial.println(Frequency1);
-  Serial.print("Frequency 2 is ");
-  Serial.println(Frequency2);
+  // Serial.print("Frequency 1 is ");
+  // Serial.println(Frequency1);
+  // Serial.print("Frequency 2 is ");
+  // Serial.println(Frequency2);
 
   // Measure Task end time
   // int endtime = micros();
@@ -245,5 +245,20 @@ void CyclicExecutive()
     }
   }
   
+  switch (CE_Counter)
+  {
+    case 0:
+      Task5();
+      break;
+
+    case 160:
+      Task5();
+      break;
+  }
+
   CE_Counter++;
+  if (CE_Counter == 200)
+  {
+    CE_Counter = 0;
+  }
 }

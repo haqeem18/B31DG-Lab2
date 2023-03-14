@@ -245,6 +245,18 @@ void CyclicExecutive()
     }
   }
   
+  // Measure Task end time
+  // Serial.println(micros() - starttime);
+  
+  
+  
+  // Performing Task 4
+  if ((CE_Counter % 21)== 0)
+  {
+    Task4();
+  }
+  
+  // Performing Task 5
   switch (CE_Counter)
   {
     case 0:
@@ -256,9 +268,10 @@ void CyclicExecutive()
       break;
   }
 
+  // Reset cycle counter (hyperperiod)
   CE_Counter++;
   if (CE_Counter == 200)
   {
     CE_Counter = 0;
-  }
+  } 
 }

@@ -15,7 +15,6 @@ B31DGCyclicExecutiveMonitor Monitor;
 // Instantiate variables
 /* CE */
 int CE_Counter = 0;
-int Task1_Count = 0;
 int offset = 0;
 
 /* Task 2 & 3*/
@@ -227,28 +226,17 @@ void Task5()
 
 void CyclicExecutive()
 {
-  // starttime = micros();
-
   // Performing Task 1
-  if ((CE_Counter % 5) == offset)
+  if ((CE_Counter % 16) == 0 || (CE_Counter % 16) == 5 || (CE_Counter % 16) == 10 || (CE_Counter % 16) == 15)
   {
     Task1();
-    Task1_Count++;
   }
-  if (Task1_Count == 4)
+  
+  // Performing Task 3
+  if ((CE_Counter % 16) == 1 || (CE_Counter % 16) == 11)
   {
-    offset++;
-    Task1_Count = 0;
-    if (offset == 5)
-    {
-      offset = 0;
-    }
+    Task3();
   }
-  
-  // Measure Task end time
-  // Serial.println(micros() - starttime);
-  
-  
   
   // Performing Task 4
   if ((CE_Counter % 21)== 0)

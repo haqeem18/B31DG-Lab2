@@ -232,6 +232,12 @@ void CyclicExecutive()
     Task1();
   }
   
+  // Performing Task 2
+  if ((CE_Counter % 80) == 6 || (CE_Counter % 80) == 22 || (CE_Counter % 80) == 54 || (CE_Counter % 80) == 70)
+  {
+    Task2();
+  }
+  
   // Performing Task 3
   if ((CE_Counter % 16) == 1 || (CE_Counter % 16) == 11)
   {

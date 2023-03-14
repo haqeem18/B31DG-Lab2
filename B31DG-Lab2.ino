@@ -15,7 +15,6 @@ B31DGCyclicExecutiveMonitor Monitor;
 // Instantiate variables
 /* CE */
 int CE_Counter = 0;
-int offset = 0;
 
 /* Task 2 & 3*/
 unsigned long halflambda;
@@ -30,10 +29,10 @@ float avg;
 /* Task 5*/
 float Frequency1;
 float Frequency2;
+char Task5_Output[10];
 
 /* Task timer */
 int starttime;
-int tasktime;
 
 void setup() 
 {
@@ -64,7 +63,7 @@ void loop()
 void Task1()
 {
   // Measure Task start time
-  // int starttime = micros();
+  // starttime = micros();
 
   Monitor.jobStarted(1);
 
@@ -81,9 +80,8 @@ void Task1()
   Monitor.jobEnded(1);
 
   // Measure Task end time
-  // tasktime = micros() - starttime;
   // Serial.print("Task 1 duration is ");
-  // Serial.println(tasktime);
+  // Serial.println(micros() - starttime);
 }
 
 void Task2()
@@ -209,10 +207,8 @@ void Task5()
   Frequency2 = 100 * (Frequency2 / (1000-500));
 
   // Print Frequency1 & Frequency2
-  // Serial.print("Frequency 1 is ");
-  // Serial.println(Frequency1);
-  // Serial.print("Frequency 2 is ");
-  // Serial.println(Frequency2);
+  sprintf(Task5_Output, "%d,%d", Frequency1, Frequency2);
+  Serial.println(Task5_Output);
 
   // Measure Task end time
   // int endtime = micros();
@@ -245,27 +241,17 @@ void CyclicExecutive()
   }
   
   // Performing Task 4
-  if ((CE_Counter % 21)== 0)
+  if ((CE_Counter % 80) == 0 ||  (CE_Counter % 80) == 21 || (CE_Counter % 80) == 42 || (CE_Counter % 80) == 63)
   {
     Task4();
   }
   
   // Performing Task 5
-  switch (CE_Counter)
+  if ((CE_Counter % 200) == 0 || (CE_Counter % 200) == 122)
   {
-    case 0:
-      Task5();
-      break;
-
-    case 160:
-      Task5();
-      break;
+    Task5();
   }
 
-  // Reset cycle counter (hyperperiod)
+  // Increment CE counter
   CE_Counter++;
-  if (CE_Counter == 200)
-  {
-    CE_Counter = 0;
-  } 
 }

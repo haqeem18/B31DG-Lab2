@@ -31,16 +31,11 @@ int Frequency1;
 int Frequency2;
 char Task5_Output[5];
 
-int Frequency11 = 570;
-int Frequency22 = 874;
-
 /* Task timer */
 int starttime;
 
 void setup() 
 {
-  // Cyclic Executive Monitor
-  Monitor.startMonitoring();
 
   // Serial monitor
   Serial.begin(9600);
@@ -52,14 +47,16 @@ void setup()
   pinMode(Analog_4_Input, INPUT);
   pinMode(LED_4_Output, OUTPUT);
 
+  // Cyclic Executive Monitor
+  Monitor.startMonitoring();
   // Set ticker interval 
-  // Cycle.attach_ms(1, CyclicExecutive);
+  CyclicExecutive();
+  Cycle.attach_ms(4, CyclicExecutive);
   // Cycle.attach_ms(1, Task1);
 }
 
 void loop()
 {
-  Task5();
 }
 
 // Task 1 execution
@@ -67,9 +64,9 @@ void loop()
 void Task1()
 {
   // Measure Task start time
-  starttime = micros();
+  // starttime = micros();
 
-  // Monitor.jobStarted(1);
+  Monitor.jobStarted(1);
 
   // Serial.println("Task 1");
 
@@ -81,19 +78,19 @@ void Task1()
   delayMicroseconds(30);
   digitalWrite(LED_1_Output, LOW);
 
-  // Monitor.jobEnded(1);
+  Monitor.jobEnded(1);
 
   // Measure Task end time
   // Serial.print("Task 1 duration is ");
-  Serial.println(micros() - starttime);
+  // Serial.println(micros() - starttime);
 }
 
 void Task2()
 {
-  // Monitor.jobStarted(2);
+  Monitor.jobStarted(2);
 
   // Measure Task start time
-  starttime = micros();
+  // starttime = micros();
 
   // Serial.println("Task 2");
 
@@ -113,17 +110,17 @@ void Task2()
   // int endtime = micros();
   // int time = endtime - starttime;
   //Serial.print("Task duration is ");
-  Serial.println(micros() - starttime);
+  // Serial.println(micros() - starttime);
 
-  // Monitor.jobEnded(2);
+  Monitor.jobEnded(2);
 }
 
 void Task3()
 {
-  // Monitor.jobStarted(3);
+  Monitor.jobStarted(3);
 
   // Measure Task start time
-  starttime = micros();
+  // starttime = micros();
 
   // Serial.println("Task 3");
 
@@ -143,17 +140,17 @@ void Task3()
   // int endtime = micros();
   // int time = endtime - starttime;
   //Serial.print("Task duration is ");
-  Serial.println(micros() - starttime);
+  // Serial.println(micros() - starttime);
   
-  // Monitor.jobEnded(3);
+  Monitor.jobEnded(3);
 }
 
 void Task4()
 {
-  // Monitor.jobStarted(4);
+  Monitor.jobStarted(4);
 
   // Measure Task start time
-  starttime = micros();
+  // starttime = micros();
 
   // Serial.println("Task 4");
 
@@ -192,67 +189,50 @@ void Task4()
   // int endtime = micros();
   // int time = endtime - starttime;
   //Serial.print("Task duration is ");
-  Serial.println(micros() - starttime);
+  // Serial.println(micros() - starttime);
   
-  // Monitor.jobEnded(4);
+  Monitor.jobEnded(4);
 }
 
 void Task5()
 {
-  // Monitor.jobStarted(5);
+  Monitor.jobStarted(5);
 
   // Measure Task start time
-  starttime = micros();
+  // starttime = micros();
 
   // Serial.println("Task 5");
 
   // Convert the frequnecy in percentage
-  Frequency1 =  (100 *(Frequency11 - 333) / (1000-333));
-  Frequency2 =  (100 *(Frequency22 - 500) / (1000-500));
+  Frequency1 =  (100 *(Frequency1 - 333) / (1000-333));
+  Frequency2 =  (100 *(Frequency2 - 500) / (1000-500));
 
   // Print Frequency1 & Frequency2
   sprintf(Task5_Output, "%d,%d", Frequency1, Frequency2);
   Serial.println(Task5_Output);
 
   // Measure Task end time
-  Serial.println(micros() - starttime);
+  // Serial.println(micros() - starttime);
 
   
-  // Monitor.jobEnded(5);
+  Monitor.jobEnded(5);
 }
 
 void CyclicExecutive()
 {
-  // Performing Task 1
-  if ((CE_Counter % 16) == 0 || (CE_Counter % 16) == 5 || (CE_Counter % 16) == 10 || (CE_Counter % 16) == 15)
-  {
-    Task1();
-  }
-  
-  // Performing Task 2
-  if ((CE_Counter % 80) == 6 || (CE_Counter % 80) == 22 || (CE_Counter % 80) == 54 || (CE_Counter % 80) == 70)
+  Task1();
+  if(CE_Counter % 5 == 0)
   {
     Task2();
+    Task4();
   }
-  
-  // Performing Task 3
-  if ((CE_Counter % 16) == 1 || (CE_Counter % 16) == 11)
+  if(CE_Counter % 2 == 0)
   {
     Task3();
   }
-  
-  // Performing Task 4
-  if ((CE_Counter % 80) == 0 ||  (CE_Counter % 80) == 21 || (CE_Counter % 80) == 42 || (CE_Counter % 80) == 63)
-  {
-    Task4();
-  }
-  
-  // Performing Task 5
-  if ((CE_Counter % 200) == 0 || (CE_Counter % 200) == 122)
+  if(CE_Counter % 25 == 0)
   {
     Task5();
   }
-
-  // Increment CE counter
   CE_Counter++;
 }

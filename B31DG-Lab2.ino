@@ -14,25 +14,31 @@ B31DGCyclicExecutiveMonitor Monitor;
 
 // Instantiate variables
 /* CE */
-int CE_Counter = 0;
+int CE_Counter = 0;         // Scheduling counter (every 4ms with ticker)
 
-/* Task 2 & 3*/
-unsigned long halflambda;
-unsigned int freq;
+/* Task 2*/
+bool state2;                // Check the state of signal at time of pulsein()
+unsigned long halflambda2;  // Length of HIGH or LOW state (half of wave cycle)
+unsigned int freq2;         // Frequency of wave
+
+/* Task 3 */
+bool state3;                // Check the state of signal at time of pulsein()
+unsigned long halflambda3;  // Length of HIGH or LOW state (half of wave cycle)
+unsigned int freq3;         // Frequency of wave
 
 /* Task 4*/
-int ADC;
-float volts [4];
-int v = 0;
-float avg;
+int ADC;                    // Value from ADC
+float volts [4];            // Array to store ADC values
+int v = 0;                  // Pointer for the array  
+float avg;                  // Average value of ADC
 
 /* Task 5*/
-int Frequency1;
-int Frequency2;
-char Task5_Output[5];
+int Frequency2;             // Frequency of Task 2 in percent
+int Frequency3;             // Frequency of Task 3 in percent
+char Task5_Output[5];       // String buffer to output %d,%d from Task 2 & Task 3
 
 /* Task timer */
-int starttime;
+int starttime;              // Measuring start time of each tasks
 
 void setup() 
 {
@@ -49,10 +55,10 @@ void setup()
 
   // Cyclic Executive Monitor
   Monitor.startMonitoring();
-  // Set ticker interval 
+
+  // Run Cyclic Executive schedule every 4ms
   CyclicExecutive();
   Cycle.attach_ms(4, CyclicExecutive);
-  // Cycle.attach_ms(1, Task1);
 }
 
 void loop()
@@ -60,16 +66,16 @@ void loop()
 }
 
 // Task 1 execution
-// Period = 20ms, Duration = 280us
+// Period = 20ms, Duration = 300us
 void Task1()
 {
-  // Measure Task start time
-  // starttime = micros();
+  // Measure Task start time (uncomment below to use)
+  /* starttime = micros(); */
 
+  // Cyclic Executive monitor start
   Monitor.jobStarted(1);
 
-  // Serial.println("Task 1");
-
+  // Generate signal
   digitalWrite(LED_1_Output, HIGH);
   delayMicroseconds(200);
   digitalWrite(LED_1_Output, LOW);
@@ -78,83 +84,103 @@ void Task1()
   delayMicroseconds(30);
   digitalWrite(LED_1_Output, LOW);
 
+  // Cyclied Executive monitor end
   Monitor.jobEnded(1);
 
-  // Measure Task end time
-  // Serial.print("Task 1 duration is ");
-  // Serial.println(micros() - starttime);
+  // Measure Task duration (incomment below to use)
+  /* Serial.print("Task 1 duration is ");
+  Serial.println(micros() - starttime); */
 }
 
 void Task2()
 {
+  // Measure Task start time (uncomment below to use)
+  /* starttime = micros(); */
+
+  // Cyclic Executive monitor start
   Monitor.jobStarted(2);
 
-  // Measure Task start time
-  // starttime = micros();
-
-  // Serial.println("Task 2");
-
   // Measure the HIGH period of the square wave
-  halflambda = pulseIn(Signal_2_Input, HIGH, 1600);
+  if (digitalRead(Signal_2_Input) == HIGH)
+  {
+    state2 = LOW;   // Set pulseIn to measure signal at LOW when signal is currently HIGH
+  }
+  else
+  {
+    state2 = HIGH;  // Set pulseIn to measure signal at High when signal is currently LOW
+  }
+  halflambda2 = pulseIn(Signal_2_Input, state2, 3000);  // Measure period of HIGH or LOW
   
   // Calculating frequency of the signal
-  freq = 1 / (2*halflambda*0.000001);
+  freq2 = 1 / (2*halflambda2*0.000001);
 
   // Print frequency of signal within 333Hz and 1000Hz
-  if ((freq >= 333) && (freq <= 1000))
+  if ((freq2 >= 333) && (freq2 <= 1000))
   {
-    Frequency2 = freq;
+    Frequency2 = freq2;
+  }
+  else
+  {
+    Frequency2 = 333;
   }
 
-  // Measure Task end time
-  // int endtime = micros();
-  // int time = endtime - starttime;
-  //Serial.print("Task duration is ");
-  // Serial.println(micros() - starttime);
-
+  // Cyclied Executive monitor end
   Monitor.jobEnded(2);
+
+  // Measure Task duration (uncomment below to use)
+  /* Serial.print("Task 2 duration is ");
+  Serial.println(micros() - starttime); */
 }
 
 void Task3()
 {
+  // Measure Task start time (uncomment below to use)
+  /* starttime = micros(); */
+
+  // Cyclic Executive monitor start
   Monitor.jobStarted(3);
 
-  // Measure Task start time
-  // starttime = micros();
-
-  // Serial.println("Task 3");
-
   // Measure the HIGH period of the square wave
-  halflambda = pulseIn(Signal_3_Input, HIGH, 1100);
+  if (digitalRead(Signal_3_Input) == HIGH)
+  {
+    state3 = LOW;   // Set pulseIn to measure signal at LOW when signal is currently HIGH
+  }
+  else
+  {
+    state3 = HIGH;  // Set pulseIn to measure signal at High when signal is currently LOW
+  }
+  halflambda3 = pulseIn(Signal_3_Input, state3, 2000);
   
   // Calculating frequency of the signal
-  freq = 1 / (2*halflambda*0.000001);
+  freq3 = 1 / (2*halflambda3*0.000001);
 
   // Print frequency of signal within 500Hz and 1000Hz
-  if ((freq >= 500) && (freq <= 1000))
+  if ((freq3 >= 500) && (freq3 <= 1000))
   {
-    Frequency2 = freq;
+    Frequency3 = freq3;
+  }
+  else
+  {
+    Frequency3 = 500;
   }
 
-  // Measure Task end time
-  // int endtime = micros();
-  // int time = endtime - starttime;
-  //Serial.print("Task duration is ");
-  // Serial.println(micros() - starttime);
-  
+  // Cyclied Executive monitor end
   Monitor.jobEnded(3);
+
+  // Measure Task duration (uncomment below to use)
+  /* Serial.print("Task 3 duration is ");
+  Serial.println(micros() - starttime); */
 }
 
 void Task4()
 {
+  // Measure Task start time (uncomment below to use)
+  /* starttime = micros(); */
+
+  // Cyclic Executive monitor start
   Monitor.jobStarted(4);
 
-  // Measure Task start time
-  // starttime = micros();
-
-  // Serial.println("Task 4");
-
-  // Point array back to start
+  // Point array back to start (0)
   if (v == 4)
   {
     v = 0;
@@ -172,8 +198,6 @@ void Task4()
 
   // Calculating the average
   avg = avg / 4;
-  //Serial.print("Average is ");
-  //Serial.println(avg);
 
   // LED error when average is greater than half of maximum range
   if (avg > 1.65)
@@ -185,51 +209,62 @@ void Task4()
     digitalWrite(LED_4_Output, LOW);
   }
 
-  // Measure Task end time
-  // int endtime = micros();
-  // int time = endtime - starttime;
-  //Serial.print("Task duration is ");
-  // Serial.println(micros() - starttime);
-  
+  // Cyclied Executive monitor end
   Monitor.jobEnded(4);
+
+  // Measure Task duration (uncomment below to use)
+  /* Serial.print("Task 4 duration is ");
+  Serial.println(micros() - starttime); */
 }
 
 void Task5()
 {
+  // Measure Task start time (uncomment below to use)
+  /* starttime = micros(); */
+
+  // Cyclic Executive monitor start
   Monitor.jobStarted(5);
 
-  // Measure Task start time
-  // starttime = micros();
-
-  // Serial.println("Task 5");
-
   // Convert the frequnecy in percentage
-  Frequency1 =  (100 *(Frequency1 - 333) / (1000-333));
-  Frequency2 =  (100 *(Frequency2 - 500) / (1000-500));
+  Frequency2 =  (100 *(Frequency2 - 333) / (1000-333));
+  Frequency3 =  (100 *(Frequency3 - 500) / (1000-500));
 
   // Print Frequency1 & Frequency2
-  sprintf(Task5_Output, "%d,%d", Frequency1, Frequency2);
+  sprintf(Task5_Output, "%d,%d", Frequency2, Frequency3);
   Serial.println(Task5_Output);
 
-  // Measure Task end time
-  // Serial.println(micros() - starttime);
-
-  
+  // Cyclied Executive monitor end
   Monitor.jobEnded(5);
+
+  // Measure Task duration (uncomment below to use)
+  /* Serial.print("Task 5 duration is ");
+  Serial.println(micros() - starttime); */
 }
 
 void CyclicExecutive()
 {
+  // Task 1 schedule
   Task1();
-  if(CE_Counter % 5 == 0)
+
+  // Task 2 schedule
+  if((CE_Counter % 10) == 1 || (CE_Counter % 10) == 5)
   {
     Task2();
-    Task4();
   }
+
+  // Task 3 schedule
   if(CE_Counter % 2 == 0)
   {
     Task3();
   }
+
+  // Task 4 schedule
+  if(CE_Counter % 5 == 0)
+  {
+    Task4();
+  }
+  
+  // Task 5 schedule
   if(CE_Counter % 25 == 0)
   {
     Task5();

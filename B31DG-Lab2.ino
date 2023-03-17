@@ -112,7 +112,10 @@ void Task2()
   halflambda2 = pulseIn(Signal_2_Input, state2, 3000);  // Measure period of HIGH or LOW
   
   // Calculating frequency of the signal
-  freq2 = 1 / (2*halflambda2*0.000001);
+  if (halflambda2 != 0)
+  {
+    freq2 = 1 / (2*halflambda2*0.000001);
+  }
 
   // Print frequency of signal within 333Hz and 1000Hz
   if ((freq2 >= 333) && (freq2 <= 1000))
@@ -121,9 +124,16 @@ void Task2()
   }
   else
   {
-    Frequency2 = 333;
+    if (freq2 > 1000)
+    {
+      Frequency2 = 1000;
+    }
+    else
+    {
+      Frequency2 = 333;
+    }
   }
-
+    
   // Cyclied Executive monitor end
   Monitor.jobEnded(2);
 
@@ -152,7 +162,10 @@ void Task3()
   halflambda3 = pulseIn(Signal_3_Input, state3, 2000);
   
   // Calculating frequency of the signal
-  freq3 = 1 / (2*halflambda3*0.000001);
+  if (halflambda3 != 0)
+  {
+    freq3 = 1 / (2*halflambda3*0.000001);
+  }
 
   // Print frequency of signal within 500Hz and 1000Hz
   if ((freq3 >= 500) && (freq3 <= 1000))
@@ -161,9 +174,16 @@ void Task3()
   }
   else
   {
-    Frequency3 = 500;
+    if (freq3 > 1000)
+    {
+      Frequency3 = 1000;
+    }
+    else
+    {
+      Frequency3 = 500;
+    }
   }
-
+  
   // Cyclied Executive monitor end
   Monitor.jobEnded(3);
 
@@ -209,6 +229,9 @@ void Task4()
     digitalWrite(LED_4_Output, LOW);
   }
 
+  // Set sum to zero
+  avg = 0;
+
   // Cyclied Executive monitor end
   Monitor.jobEnded(4);
 
@@ -226,8 +249,8 @@ void Task5()
   Monitor.jobStarted(5);
 
   // Convert the frequnecy in percentage
-  Frequency2 =  (100 *(Frequency2 - 333) / (1000-333));
-  Frequency3 =  (100 *(Frequency3 - 500) / (1000-500));
+  Frequency2 =  (99 *(Frequency2 - 333) / (1000-333));
+  Frequency3 =  (99 *(Frequency3 - 500) / (1000-500));
 
   // Print Frequency1 & Frequency2
   sprintf(Task5_Output, "%d,%d", Frequency2, Frequency3);
